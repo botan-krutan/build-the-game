@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class LaunchBall : MonoBehaviour
 {
-    [SerializeField] GameObject _ballPrefab;
-    [SerializeField] Vector2 _spawnLocation;
-    [SerializeField] GameObject _goButton;
-    public void OnGoButtonPress()
+    private void Start()
     {
-        GameObject ball = Instantiate(_ballPrefab, _spawnLocation, Quaternion.Euler(0,0,0));
-        Camera.main.GetComponent<FollowBall>()._ballTransform = ball.transform;
-        GameObject[] draggables = GameObject.FindGameObjectsWithTag("Draggable");
-        foreach(var draggable in draggables)
+        FindObjectOfType<GameManager>().OnStateChanged.AddListener(Unfreeze);
+    }
+    void Unfreeze(GameManager.GameState state)
+    {   
+        if(state == GameManager.GameState.Launch)
         {
-            draggable.tag = "Undraggable";
+            GetComponent<Rigidbody2D>().isKinematic = false;
         }
-        _goButton.SetActive(false);
+        
     }
 }
